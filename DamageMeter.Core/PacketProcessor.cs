@@ -85,8 +85,6 @@ namespace DamageMeter
             Initialize();
             var packetAnalysis = new Thread(PacketAnalysisLoop);
             packetAnalysis.Start();
-            /*TeraSniffer.Instance*/
-            Sniffer.EnableMessageStorage = BasicTeraData.Instance.WindowData.PacketsCollect;
         }
 
         private void OnReleaseVersionUpdated(int rv)
@@ -281,7 +279,7 @@ namespace DamageMeter
 
         public void Initialize()
         {
-            DataExporter.DpsServers = new List<DpsServer> { DpsServer.NeowutranAnonymousServer };
+            DataExporter.DpsServers = new List<DpsServer>();
             foreach (var dpsServer in BasicTeraData.Instance.WindowData.DpsServers)
             {
                 var server = new DpsServer(dpsServer, false);

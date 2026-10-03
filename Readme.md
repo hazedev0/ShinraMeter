@@ -1,6 +1,22 @@
 Shinra Meter
 ==============
 
+This is a fork of [neowutran's ShinraMeter](https://github.com/neowutran/ShinraMeter), maintained by
+hazedev0.
+
+It's made for and tested on **Agaia (EU, English client)**. Its game data comes from the
+[TeraDpsMeterData fork](https://github.com/hazedev0/TeraDpsMeterData), extracted from Agaia's EU client,
+so on other servers or with other client languages names and icons may be missing or wrong. Unlike the
+original, it doesn't upload fight results anywhere.
+
+Install it as a TERA Toolbox module: save
+[module.json](https://raw.githubusercontent.com/hazedev0/shinra-toolbox-release/master/module.json) into
+`mods\shinra-meter` in your Toolbox folder (replacing the old one, if any) and start Toolbox.
+
+Report bugs at https://github.com/hazedev0/ShinraMeter/issues.
+
+The rest of this readme is from the original project.
+
 [<img src="https://img.shields.io/badge/rating-4%2B%20stars-brightgreen.svg">](https://recordnotfound.com/ShinraMeter-neowutran-9937)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/yukikoo)

@@ -653,19 +653,6 @@ namespace DamageMeter.UI.Windows
 
 
         // misc
-        public bool ExportPacketLogs
-        {
-            get => Data.PacketsCollect;
-            set
-            {
-                if (Data.PacketsCollect == value) return;
-                Data.PacketsCollect = value;
-                NotifyPropertyChanged();
-                /*TeraSniffer.Instance*/
-                PacketProcessor.Instance.Sniffer.EnableMessageStorage = value;
-
-            }
-        }
         public bool ExcelAutoExport
         {
             get => Data.Excel;
@@ -1022,7 +1009,7 @@ namespace DamageMeter.UI.Windows
             });
             BrowseLinkCommand = new RelayCommand(type =>
             {
-                var url = "https://github.com/neowutran/ShinraMeter";
+                var url = "https://github.com/hazedev0/ShinraMeter";
                 switch (type.ToString())
                 {
                     case "wiki": url += "/wiki"; break;

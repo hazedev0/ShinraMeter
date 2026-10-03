@@ -30,6 +30,8 @@ namespace Data
             ResourceDirectory = resourceDirectory;
             Directory.CreateDirectory(Path.Combine(resourceDirectory, "config")); //ensure config dir is created
             var repo = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            // log4net.xml puts error.log here; a relative path would land in the working directory (Toolbox's own folder)
+            GlobalContext.Properties["ShinraDirectory"] = Path.GetFullPath(Path.Combine(ResourceDirectory, ".."));
             XmlConfigurator.Configure(repo, new Uri(Path.Combine(ResourceDirectory, "log4net.xml")));
             HotkeysData = new HotkeysData(this);
             WindowData = new WindowData(this);
@@ -109,34 +111,6 @@ namespace Data
         {
             if (debug && _errorCount-- <= 0) { return; }
             Log.Error(error);
-            Task.Run(() =>
-            {
-                try
-                {
-                    if (!Instance.WindowData.Debug || local) { return; }
-                    var name = (from x in new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem").Get().Cast<ManagementObject>()
-                                   select x.GetPropertyValue("Version") + " Memory Total:" + x.GetPropertyValue("TotalVisibleMemorySize") + " Virtual:" +
-                                          x.GetPropertyValue("TotalVirtualMemorySize") + " PhFree:" + x.GetPropertyValue("FreePhysicalMemory") + " VFree:" +
-                                          x.GetPropertyValue("FreeVirtualMemory")).FirstOrDefault() ?? "unknown";
-                    name = name + " CPU:" + ((from x in new ManagementObjectSearcher("SELECT * FROM Win32_Processor").Get().Cast<ManagementObject>()
-                                                 select x.GetPropertyValue("Name") + " load:" + x.GetPropertyValue("LoadPercentage") + "%").FirstOrDefault() ??
-                                             "processor unknown");
-                    error = $"##### (version={UpdateManager.Version} Region={_region}) running on {name}:\r\n" + (debug ? "##### Debug: " : "") + error;
-
-                    using (var client = new HttpClient())
-                    {
-                        var formContent = new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("error", error)});
-
-                        var response = client.PostAsync("http://diclah.com/~yukikoo/debug/debug.php", formContent);
-                        var responseString = response.Result.Content.ReadAsStringAsync();
-                        Console.WriteLine(responseString.Result);
-                    }
-                }
-                catch
-                {
-                    // Ignore
-                }
-            });
         }
     }
 }

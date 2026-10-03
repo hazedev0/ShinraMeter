@@ -761,8 +761,6 @@
                 <!--Misc-->
                 <TabItem>
                     <StackPanel MaxWidth="500">
-                        <settings:CheckboxSetting IsOn="{Binding ExportPacketLogs, Mode=TwoWay}"
-                                                  SettingName="{x:Static lang:LP.ExportPacketLogs}" />
                         <settings:CheckboxSetting IsOn="{Binding ExcelAutoExport, Mode=TwoWay}"
                                                   SettingName="{x:Static lang:LP.SystemTray_Autoexport_to_Excel}" />
                         <settings:CheckboxSetting IsOn="{Binding JsonAutoExport, Mode=TwoWay}"

@@ -18,7 +18,6 @@ namespace DamageMeter.TeraDpsApi
         public static readonly List<AreaAllowed> DefaultAreaAllowed = JsonConvert.DeserializeObject<List<AreaAllowed>>(
             "[{\"AreaId\": 735, \"BossIds\": []},{\"AreaId\": 935,\"BossIds\": []},{\"AreaId\": 950,\"BossIds\": [1000, 2000, 3000, 4000]},{\"AreaId\": 794,\"BossIds\": []},{\"AreaId\": 994,\"BossIds\": []},{\"AreaId\": 970,\"BossIds\": []},{\"AreaId\": 770,\"BossIds\": []},{\"AreaId\": 916,\"BossIds\": [1000, 91606]},{\"AreaId\": 710,\"BossIds\": [3000]},{\"AreaId\": 716,\"BossIds\": [1000]},{\"AreaId\": 969,\"BossIds\": [76903]},{\"AreaId\": 769,\"BossIds\": [76903]},{\"AreaId\": 455,\"BossIds\": [300]},{\"AreaId\": 766,\"BossIds\": [76619]},{\"AreaId\": 760,\"BossIds\": [3000]},{\"AreaId\": 860,\"BossIds\": [3000]},{\"AreaId\": 739,\"BossIds\": []},{\"AreaId\": 939,\"BossIds\": []},{\"AreaId\": 720,\"BossIds\": []},{\"AreaId\": 920,\"BossIds\": []}]"
             );
-        public static DpsServer NeowutranAnonymousServer => new DpsServer(DpsServerData.Neowutran, true);
 
         public bool Enabled => Data.Enabled;
         public Uri UploadUrl => Data.UploadUrl;
@@ -83,7 +82,7 @@ namespace DamageMeter.TeraDpsApi
                         Npc = entity.Info.Name,
                         Server = Data.HostName
                     }, entity);
-                    DataExporter.InvokeFightSendStatusUpdated(DataExporter.FightSendStatus.Failed, $"{this.Data.HostName}: upload failed, check upload history for more info");
+                    DataExporter.InvokeFightSendStatusUpdated(DataExporter.FightSendStatus.Failed, $"Upload to {this.Data.HostName} failed: {e.Message}");
 
                 }
                 return false;
@@ -97,7 +96,7 @@ namespace DamageMeter.TeraDpsApi
 
             if (string.IsNullOrWhiteSpace(GlyphUrl?.ToString()))
             {
-                if (this.GlyphUrl != NeowutranAnonymousServer.GlyphUrl)
+                if (this.GlyphUrl != null)
                     DataExporter.InvokeGlyphExportStatusChanged(DataExporter.GlyphExportStatus.InvalidUrl, Data.HostName + ": invalid URL");
                 return false;
             }
@@ -118,7 +117,7 @@ namespace DamageMeter.TeraDpsApi
 
                         var responseString = response.Result.Content.ReadAsStringAsync();
                         //todo: it would be nice to tell if the request was accepted or rejected from the server
-                        if (this.GlyphUrl != NeowutranAnonymousServer.GlyphUrl)
+                        if (this.GlyphUrl != null)
                             DataExporter.InvokeGlyphExportStatusChanged(DataExporter.GlyphExportStatus.Success, Data.HostName + ": glyphs uploaded successfully");
 
                         Debug.WriteLine(responseString.Result);
@@ -128,7 +127,7 @@ namespace DamageMeter.TeraDpsApi
                 {
                     Debug.WriteLine(ex.Message);
                     Debug.WriteLine(ex.StackTrace);
-                    if (this.GlyphUrl != NeowutranAnonymousServer.GlyphUrl)
+                    if (this.GlyphUrl != null)
                         DataExporter.InvokeGlyphExportStatusChanged(DataExporter.GlyphExportStatus.Unknown, Data.HostName + ": " + ex.Message);
 
                 }
@@ -172,16 +171,16 @@ namespace DamageMeter.TeraDpsApi
                     {
                         if (!AnonymousUpload)
                         {
-                            PacketProcessor.Instance.BossLink.TryAdd(
-                            new UploadData
+                            var uploadData = new UploadData
                             {
                                 Success = false,
                                 Time = DateTime.UtcNow,
                                 Message = (string)responseObject["message"],
                                 Npc = npc.Info.Name,
                                 Server = Data.HostName
-                            }, npc);
-                            DataExporter.InvokeFightSendStatusUpdated(DataExporter.FightSendStatus.Failed, $"{this.Data.HostName}: upload failed, check upload history for more info");
+                            };
+                            PacketProcessor.Instance.BossLink.TryAdd(uploadData, npc);
+                            DataExporter.InvokeFightSendStatusUpdated(DataExporter.FightSendStatus.Failed, $"Upload to {this.Data.HostName} failed: {uploadData.Message}");
                         }
                     }
                 }

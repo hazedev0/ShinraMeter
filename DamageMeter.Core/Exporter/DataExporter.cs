@@ -41,7 +41,7 @@ namespace DamageMeter
             Success,
             Failed
         }
-        public static List<DpsServer> DpsServers = new List<DpsServer> { DpsServer.NeowutranAnonymousServer };
+        public static List<DpsServer> DpsServers = new List<DpsServer>();
         public static event Action<GlyphExportStatus, string> GlpyhExportStatusUpdated;
         public static event Action<FightSendStatus, string> FightSendStatusUpdated;
         private static long _lastSend;
@@ -272,18 +272,6 @@ namespace DamageMeter
                 ExcelExporter.ExcelSave(stats, PacketProcessor.Instance.EntityTracker.MeterUser.Name);
                 Anonymize(stats.BaseStats);
                 DpsServers.Where(x => x.AnonymousUpload).ToList().ForEach(x => x.CheckAndSendFightData(stats.BaseStats, entity));
-                if (BasicTeraData.Instance.WindowData.PacketsCollect)
-                {
-                    try
-                    {
-                        PacketsExporter.Instance.Export(stats.BaseStats, entity);
-                    }
-                    catch (Exception ex)
-                    {
-                        BasicTeraData.LogError("##### Packets export EXCEPTION #####\r\n" + ex.Message + "\r\n" + ex.StackTrace + "\r\n" + ex.Source + "\r\n" + ex + "\r\n" + ex.Data +
-                                  "\r\n" + ex.InnerException + "\r\n" + ex.TargetSite);
-                    }
-                }
 
             });
             sendThread.Start();
