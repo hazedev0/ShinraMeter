@@ -14,10 +14,14 @@
                 <ColumnDefinition SharedSizeGroup="m4" Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="2" FontSize="14" HorizontalContentAlignment="Left" Padding="40,0,0,0"
-                   HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Name="LabelName"
-                   Foreground="{StaticResource LightSecondaryText}"
-                   MinHeight="29" />
+            <DockPanel Grid.Column="2" VerticalAlignment="Center">
+                <Label DockPanel.Dock="Right" FontSize="14" Padding="10,0,0,0" VerticalContentAlignment="Center"
+                       x:Name="LabelChained" Foreground="{StaticResource LightSecondaryText}" MinHeight="29" />
+                <Label FontSize="14" HorizontalContentAlignment="Left" Padding="40,0,0,0"
+                       HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Name="LabelName"
+                       Foreground="{StaticResource LightSecondaryText}"
+                       MinHeight="29" />
+            </DockPanel>
             <Label Grid.Column="3" FontSize="14" HorizontalContentAlignment="Right" Padding="0"
                    HorizontalAlignment="Stretch" x:Name="LabelTotalMana" VerticalAlignment="Center"
                    MinHeight="29"
